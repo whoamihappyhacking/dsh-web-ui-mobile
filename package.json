@@ -1,0 +1,50 @@
+{
+  "name": "dsh-web-ui-mobile",
+  "version": "0.4.0",
+  "description": "Responsive mobile layout support for the official DeepSeek Harness Web UI",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/whoamihappyhacking/dsh-web-ui-mobile.git"
+  },
+  "bugs": {
+    "url": "https://github.com/whoamihappyhacking/dsh-web-ui-mobile/issues"
+  },
+  "homepage": "https://github.com/whoamihappyhacking/dsh-web-ui-mobile#readme",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./client": "./src/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "check:syntax": "node --check src/index.js && node --check src/client.js",
+    "pack:check": "npm pack --dry-run",
+    "check": "npm run check:syntax && npm run pack:check"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "mobile",
+    "responsive",
+    "web-ui"
+  ],
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web"
+    }
+  }
+}

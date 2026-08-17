@@ -6,7 +6,8 @@
 
 - At widths up to 760px, the official sidebar and details columns open as overlays so the conversation retains the full usable width.
 - At widths up to 600px, the collapsed sidebar occupies no layout space. In-flow sidebar and settings buttons appear beside the conversation title and in the empty conversation header.
-- On phones, the sidebar slides over the conversation when opened, closes after a session is selected, and settings provide an in-flow back button.
+- On phones, the sidebar slides over the conversation when opened and settings provide an in-flow back button.
+- At widths up to 760px, selecting a session or clicking the backdrop closes the open sidebar.
 - A collapsed details panel is removed from the phone layout, so its empty placeholder cannot cover the conversation.
 - Phone settings use a full-screen vertical layout without horizontal page scrolling.
 - Model and context popups stay inside the visible viewport. The composer uses a compact model label while retaining the full name as accessible text.

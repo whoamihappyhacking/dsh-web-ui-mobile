@@ -5,6 +5,10 @@ window.__ModuleLoader__.load({
     var exports = module.exports;
 
     var CSS = `
+[data-dsh-mobile-sidebar-backdrop] {
+  display: none;
+}
+
 @media (max-width: 760px) {
   html,
   body,
@@ -23,23 +27,32 @@ window.__ModuleLoader__.load({
     grid-template-columns: 0 minmax(0, 1fr) 0 !important;
   }
 
-  [data-dsh-mobile-frame]::before {
-    content: "";
+  [data-dsh-mobile-sidebar-backdrop] {
+    display: block;
     position: fixed;
     inset: 0;
     z-index: 880;
+    padding: 0;
+    border: 0;
     background: var(--dsw-alias-bg-mask-1, rgb(0 0 0 / 24%));
     backdrop-filter: var(--dsw-mask-blur, blur(2px));
-    pointer-events: none;
+    cursor: default;
     opacity: 0;
     visibility: hidden;
+    pointer-events: none;
     transition: opacity 220ms ease, visibility 0s linear 220ms;
   }
 
-  [data-dsh-mobile-frame]:not([data-sidebar-collapsed])::before {
+  [data-dsh-mobile-sidebar-backdrop][data-open] {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
     transition-delay: 0s;
+  }
+
+  [data-dsh-mobile-sidebar-backdrop]:focus-visible {
+    outline: 2px solid var(--dsw-alias-border-focus, #4d6bfe);
+    outline-offset: -4px;
   }
 
   [data-dsh-mobile-frame]:not([data-sidebar-collapsed]) [data-dsh-mobile-pane="sidebar"] {
@@ -449,7 +462,12 @@ window.__ModuleLoader__.load({
         viewport.setAttribute("content", originalViewport + ", viewport-fit=cover");
       }
 
+      var mobileQuery = window.matchMedia("(max-width: 760px)");
       var phoneQuery = window.matchMedia("(max-width: 600px)");
+      var sidebarBackdrop = document.createElement("button");
+      sidebarBackdrop.type = "button";
+      sidebarBackdrop.dataset.dshMobileSidebarBackdrop = "";
+      document.body.append(sidebarBackdrop);
       var headerActions = document.createElement("div");
       headerActions.setAttribute("data-dsh-mobile-header-actions", "");
       var headerSidebarButton = document.createElement("button");
@@ -562,6 +580,18 @@ window.__ModuleLoader__.load({
         }
       }
 
+      function syncSidebarBackdrop(layout) {
+        var open = mobileQuery.matches
+          && layout
+          && !layout.frame.hasAttribute("data-sidebar-collapsed");
+        sidebarBackdrop.toggleAttribute("data-open", Boolean(open));
+        var label = document.documentElement.lang.toLowerCase().startsWith("zh")
+          ? "关闭侧边栏"
+          : "Close sidebar";
+        sidebarBackdrop.setAttribute("aria-label", label);
+        sidebarBackdrop.setAttribute("title", label);
+      }
+
       function syncSettingsBackButton() {
         var dialog = document.querySelector(
           '[role="dialog"][aria-modal="true"]:has([data-slot="settings.header"])',
@@ -603,6 +633,16 @@ window.__ModuleLoader__.load({
         if (original instanceof HTMLButtonElement) original.click();
       }
 
+      function closeSidebar() {
+        var frame = document.querySelector("[data-dsh-mobile-frame]");
+        if (!(frame instanceof HTMLElement) || frame.hasAttribute("data-sidebar-collapsed")) return;
+        var sidebar = frame.querySelector('[data-dsh-mobile-pane="sidebar"]');
+        var original = sidebar && sidebar.querySelector(
+          '[data-slot="sidebar"] > * > div:first-child > button:last-child',
+        );
+        if (original instanceof HTMLButtonElement) original.click();
+      }
+
       function openSettings() {
         var sidebar = document.querySelector('[data-dsh-mobile-pane="sidebar"]');
         var original = sidebar && sidebar.querySelector(
@@ -621,25 +661,20 @@ window.__ModuleLoader__.load({
       }
 
       function closeSidebarAfterSessionSelect(event) {
-        if (!phoneQuery.matches || !(event.target instanceof Element)) return;
+        if (!mobileQuery.matches || !(event.target instanceof Element)) return;
         if (event.target.closest("button, a, [role=button]")) return;
         var row = event.target.closest(
           '[data-dsh-mobile-pane="sidebar"] [role="treeitem"][aria-selected]',
         );
         if (!(row instanceof HTMLElement)) return;
 
-        var frame = document.querySelector("[data-dsh-mobile-frame]");
-        if (!(frame instanceof HTMLElement) || frame.hasAttribute("data-sidebar-collapsed")) return;
-        var sidebar = frame.querySelector('[data-dsh-mobile-pane="sidebar"]');
-        var original = sidebar && sidebar.querySelector(
-          '[data-slot="sidebar"] > * > div:first-child > button:last-child',
-        );
-        if (original instanceof HTMLButtonElement) original.click();
+        closeSidebar();
       }
 
       headerSidebarButton.addEventListener("click", openSidebar);
       headerSettingsButton.addEventListener("click", openSettings);
       settingsBackButton.addEventListener("click", closeSettings);
+      sidebarBackdrop.addEventListener("click", closeSidebar);
       document.addEventListener("click", closeSidebarAfterSessionSelect);
 
       function positionPopup(popup, trigger, kind) {
@@ -681,6 +716,7 @@ window.__ModuleLoader__.load({
 
       function refresh() {
         var layout = annotateFrame();
+        syncSidebarBackdrop(layout);
         syncHeaderActions(layout);
         syncSettingsBackButton();
         syncMobileModelLabel();
@@ -689,7 +725,13 @@ window.__ModuleLoader__.load({
 
       refresh();
       var observer = new MutationObserver(refresh);
-      observer.observe(document.body, { childList: true, subtree: true });
+      observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ["data-sidebar-collapsed", "data-details-collapsed"],
+        childList: true,
+        subtree: true,
+      });
+      mobileQuery.addEventListener("change", refresh);
       phoneQuery.addEventListener("change", refresh);
       window.addEventListener("resize", refresh);
       if (window.visualViewport) {
@@ -700,6 +742,7 @@ window.__ModuleLoader__.load({
       ctx.effect(function () {
         return function () {
           observer.disconnect();
+          mobileQuery.removeEventListener("change", refresh);
           phoneQuery.removeEventListener("change", refresh);
           window.removeEventListener("resize", refresh);
           if (window.visualViewport) {
@@ -720,7 +763,9 @@ window.__ModuleLoader__.load({
           headerSidebarButton.removeEventListener("click", openSidebar);
           headerSettingsButton.removeEventListener("click", openSettings);
           settingsBackButton.removeEventListener("click", closeSettings);
+          sidebarBackdrop.removeEventListener("click", closeSidebar);
           document.removeEventListener("click", closeSidebarAfterSessionSelect);
+          sidebarBackdrop.remove();
           headerActions.remove();
           settingsBackButton.remove();
           tag.remove();

@@ -1,6 +1,6 @@
 {
   "name": "dsh-web-ui-mobile",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Responsive mobile layout support for the official DeepSeek Harness Web UI",
   "license": "MIT",
   "repository": {

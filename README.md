@@ -1,89 +1,89 @@
 # dsh-web-ui-mobile
 
-English | [简体中文](./README.zh-CN.md)
+[English](./README.en.md) | 简体中文
 
-`dsh-web-ui-mobile` is a mobile adaptation plugin for the official DeepSeek Harness Web UI. It is designed primarily for phones while also accommodating tablets and foldable devices. The plugin is distributed as a standalone DSH bundle, does not modify DeepSeek Harness source files, and leaves the official layout in place at desktop widths.
+`dsh-web-ui-mobile` 是基于 DeepSeek Harness 官方 Web UI 的移动端适配插件，主要面向普通手机，同时兼顾平板和折叠屏设备。插件以独立 DSH bundle 的形式发布，不修改 DeepSeek Harness 源文件；在桌面宽度下仍使用官方布局。
 
-## Features
+## 功能
 
-### Viewports up to 760px
+### 视口宽度不超过 760px
 
-- The session sidebar and details panel open as overlays so the conversation retains the usable page width.
-- Selecting a session closes the sidebar and opens that conversation.
-- Clicking the backdrop to the right of the sidebar closes the sidebar.
+- 会话侧边栏和详情面板以覆盖层形式打开，让会话区域保留可用的页面宽度。
+- 选择会话后，侧边栏会自动关闭并进入对应会话。
+- 点击侧边栏右侧的遮罩会关闭侧边栏。
 
-### Viewports up to 600px
+### 视口宽度不超过 600px
 
-- The collapsed official sidebar no longer reserves space on the left.
-- Sidebar and settings buttons appear to the left of the conversation title, including in the empty conversation header.
-- The sidebar covers the conversation when opened, and settings provide an in-flow back button.
-- Settings use a full-screen phone layout with readable navigation, content, and controls, without horizontal page scrolling.
-- Model selection and context usage popups stay inside the visible viewport.
-- The composer uses a compact model name while retaining the full name as accessible text.
-- A collapsed empty details panel does not cover the conversation.
+- 收起的官方侧边栏不再占用左侧空间。
+- 会话标题左侧显示侧边栏开关和设置入口，空会话标题栏中也会显示这些入口。
+- 侧边栏打开时会覆盖会话，设置页提供随布局显示的返回按钮。
+- 设置页使用完整的全屏手机布局，导航、内容和控件均可清晰阅读和操作，页面不会横向滚动。
+- 模型选择和上下文消耗浮层限制在可见视口内。
+- 输入框使用紧凑的模型名称，同时为辅助技术保留完整名称。
+- 空的详情面板收起后不会遮挡会话内容。
 
-### Viewports wider than 760px
+### 视口宽度超过 760px
 
-- The official DeepSeek Harness desktop layout remains unchanged.
+- 保持 DeepSeek Harness 官方桌面布局不变。
 
-## Before and after
+## 优化前后对比
 
-### Conversation layout and sidebar
+### 会话布局和侧边栏
 
-| Before | After |
+| 优化前 | 优化后 |
 | --- | --- |
-| ![Before: the collapsed official sidebar reserves a full strip on the left](./docs/assets/before-conversation-sidebar.png)<br>The collapsed official sidebar still reserves a full strip on the left, reducing the conversation width on a phone. | ![After: the conversation uses the full phone width with controls beside the title](./docs/assets/after-conversation-sidebar.png)<br>The conversation uses the full width by default. Sidebar and settings controls sit to the left of the title, and the sidebar opens as an overlay when needed. |
+| ![优化前：官方收起侧边栏仍占用左侧的一整条空间](./docs/assets/before-conversation-sidebar.png)<br>官方收起侧边栏仍占用左侧的一整条空间，压缩手机上的会话内容区域。 | ![优化后：会话使用完整宽度，入口位于标题左侧](./docs/assets/after-conversation-sidebar.png)<br>会话默认使用完整宽度，侧边栏开关和设置入口位于标题左侧；侧边栏按需覆盖显示。 |
 
-### Model selection
+### 模型选择
 
-| Before | After |
+| 优化前 | 优化后 |
 | --- | --- |
-| ![Before: the model picker extends beyond the visible phone viewport](./docs/assets/before-model-picker.png)<br>The model picker extends beyond the visible phone area, clipping text and options. | ![After: the model picker fits within the phone viewport](./docs/assets/after-model-picker.png)<br>The popup width and position fit the phone viewport, keeping model names fully visible and readable. |
+| ![优化前：模型选择浮层超出手机可见区域](./docs/assets/before-model-picker.png)<br>模型选择浮层超出手机可见区域，文字和选项被裁切。 | ![优化后：模型选择浮层适合手机视口](./docs/assets/after-model-picker.png)<br>浮层宽度和位置适合手机视口，模型名称可以完整、清晰地显示。 |
 
-### Settings
+### 设置页面
 
-| Before | After |
+| 优化前 | 优化后 |
 | --- | --- |
-| ![Before: settings navigation compresses the content into a narrow column](./docs/assets/before-settings.png)<br>The navigation compresses the content area, leaving settings text and controls too narrow to read comfortably. | ![After: settings navigation and content use a mobile layout](./docs/assets/after-settings.png)<br>Settings navigation and content use a mobile layout so each setting remains visible and operable. |
+| ![优化前：设置导航将内容挤压到狭窄区域](./docs/assets/before-settings.png)<br>导航栏挤压内容区，设置文字和控件过窄，页面难以阅读。 | ![优化后：设置导航和内容使用移动端布局](./docs/assets/after-settings.png)<br>设置导航和内容改为移动端布局，设置项可以完整显示和操作。 |
 
-## Install
+## 安装
 
-Add a local checkout to an existing profile:
+将本地检出添加到现有 profile：
 
 ```sh
 dsh plugin --profile web add ./dsh-web-ui-mobile
 ```
 
-After the package is published to npm, install it by package name:
+软件包发布到 npm 后，也可以按包名安装：
 
 ```sh
 dsh plugin --profile web add dsh-web-ui-mobile
 ```
 
-Restart the profile after installation. No separate build step is required because the browser entry is distributed as source JavaScript.
+安装后请重启该 profile。浏览器入口以 JavaScript 源文件形式发布，因此不需要单独构建。
 
-## Remove
+## 卸载
 
 ```sh
 dsh plugin --profile web remove dsh-web-ui-mobile
 ```
 
-Restart the profile after removal.
+卸载后请重启该 profile。
 
-## Development
+## 开发
 
-Run the package checks before installing a checkout:
+安装本地检出前，请运行软件包检查：
 
 ```sh
 npm run check
 ```
 
-The browser implementation is in `src/client.js`; `src/index.js` is the DSH host entry point. `cordis.patch.yml` mounts the plugin in the selected profile.
+浏览器端实现在 `src/client.js` 中，`src/index.js` 是 DSH 宿主入口。`cordis.patch.yml` 负责将插件挂载到选定的 profile。
 
-## Compatibility
+## 兼容性
 
-The plugin integrates with DOM slots exposed by the official Web UI. Changes to those slots may require a matching plugin update.
+插件依赖官方 Web UI 暴露的 DOM slot。如果这些 slot 发生变化，插件可能需要同步更新。
 
-## License
+## 许可证
 
 MIT

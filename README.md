@@ -54,10 +54,10 @@
 dsh plugin --profile web add ./dsh-web-ui-mobile
 ```
 
-软件包发布到 npm 后，也可以按包名安装：
+也可以直接从 GitHub 安装：
 
 ```sh
-dsh plugin --profile web add dsh-web-ui-mobile
+dsh plugin --profile web add github:whoamihappyhacking/dsh-web-ui-mobile#main
 ```
 
 安装后请重启该 profile。浏览器入口以 JavaScript 源文件形式发布，因此不需要单独构建。

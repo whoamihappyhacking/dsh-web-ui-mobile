@@ -54,10 +54,10 @@ Add a local checkout to an existing profile:
 dsh plugin --profile web add ./dsh-web-ui-mobile
 ```
 
-After the package is published to npm, install it by package name:
+Alternatively, install it directly from GitHub:
 
 ```sh
-dsh plugin --profile web add dsh-web-ui-mobile
+dsh plugin --profile web add github:whoamihappyhacking/dsh-web-ui-mobile#main
 ```
 
 Restart the profile after installation. No separate build step is required because the browser entry is distributed as source JavaScript.

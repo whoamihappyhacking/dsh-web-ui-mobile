@@ -22,6 +22,8 @@
     "src",
     "cordis.patch.yml",
     "README.md",
+    "README.zh-CN.md",
+    "docs/assets",
     "LICENSE"
   ],
   "scripts": {
